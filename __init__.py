@@ -1,4 +1,4 @@
 from .app import app
-import Serveur.views
-import Serveur.models
-import Serveur.commands
+from .views import *
+from .models import *
+from .commands import *
