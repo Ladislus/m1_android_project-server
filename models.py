@@ -55,7 +55,7 @@ class Challenge(db.Model):
     _name = db.Column('c_name', db.String(255), nullable=False)
     _type = db.Column('c_type', db.Boolean, nullable=False, default=False)
     _theme = db.Column('c_theme', db.String(255), nullable=False)
-    _date = db.Column('c_duration', db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    _date = db.Column('c_duration', db.DateTime, nullable=False)
     _timer = db.Column('c_timer', db.Integer, nullable=False)
 
     _participations = relationship('Participation', back_populates='_challenge')
