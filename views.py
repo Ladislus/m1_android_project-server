@@ -11,16 +11,16 @@ from flask import jsonify, request
 
 #   BAD REQUESTS
 def wrong_api_key():
-    return 'Invalid api_key', 403
+    return {'error': 'Invalid api_key'}, 403
 
 
 def missing_argument(arg):
-    return 'Missing argument: ' + arg, 400
+    return {'error': 'Missing argument:' + arg}, 400
 
 
 #   RESPONSES
 def nothing_found():
-    return '', 204
+    return {''}, 204
 
 
 def reply(resp):
@@ -29,8 +29,7 @@ def reply(resp):
 
 #   UTILITIES
 def valid_request(req):
-    # return req.headers.get('api_key') == os.environ.get('API_KEY')
-    return True
+    return req.headers.get('api_key') == os.environ.get('API_KEY')
 
 
 #       ##############
@@ -38,26 +37,27 @@ def valid_request(req):
 #       ##############
 
 #   FULL
-@app.route('/api/full', methods=['POST'])
+@app.route('/api/full', methods=['GET'])
 def api_full():
     if not valid_request(request):
         return wrong_api_key()
-    return\
+    return reply(
         {
             'users': [user.jsonify() for user in User.query.all()],
             'drawings': [drawing.jsonify() for drawing in Drawing.query.all()],
             'challenges': [challenge.jsonify() for challenge in Challenge.query.all()],
             'participations': [participation.jsonify() for participation in Participation.query.all()]
-        }, 200
+        }
+    )
 
 
 #   USERS
-@app.route('/api/user/getall', methods=['POST'])
+@app.route('/api/user/getall', methods=['GET'])
 def api_user_getall():
     return reply([user.jsonify() for user in User.query.all()])
 
 
-@app.route('/api/user/get', methods=['POST'])
+@app.route('/api/user/get', methods=['GET'])
 def api_user_get():
     if not valid_request(request):
         return wrong_api_key()
@@ -70,12 +70,12 @@ def api_user_get():
 
 
 #   DRAWINGS
-@app.route('/api/drawing/getall', methods=['POST'])
+@app.route('/api/drawing/getall', methods=['GET'])
 def api_drawing_getall():
     return reply([drawing.jsonify() for drawing in Drawing.query.all()])
 
 
-@app.route('/api/drawing/get', methods=['POST'])
+@app.route('/api/drawing/get', methods=['GET'])
 def api_drawing_get():
     if not valid_request(request):
         return wrong_api_key()
@@ -88,12 +88,12 @@ def api_drawing_get():
 
 
 #   CHALLENGES
-@app.route('/api/challenge/getall', methods=['POST'])
+@app.route('/api/challenge/getall', methods=['GET'])
 def api_challenge_getall():
     return jsonify([challenge.jsonify() for challenge in Challenge.query.all()]), 200
 
 
-@app.route('/api/challenge/get', methods=['POST'])
+@app.route('/api/challenge/get', methods=['GET'])
 def api_challenge_get():
     if not valid_request(request):
         return wrong_api_key()
@@ -106,12 +106,12 @@ def api_challenge_get():
 
 
 #   PARTICIPATIONS
-@app.route('/api/participation/getall', methods=['POST'])
+@app.route('/api/participation/getall', methods=['GET'])
 def api_participation_getall():
     return jsonify([participation.jsonify() for participation in Participation.query.all()]), 200
 
 
-@app.route('/api/participation/get', methods=['POST'])
+@app.route('/api/participation/get', methods=['GET'])
 def api_participation_get():
     if not valid_request(request):
         return wrong_api_key()
