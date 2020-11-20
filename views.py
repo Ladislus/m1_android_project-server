@@ -20,7 +20,7 @@ def missing_argument(arg):
 
 #   RESPONSES
 def nothing_found():
-    return {''}, 204
+    return {}, 204
 
 
 def reply(resp):
