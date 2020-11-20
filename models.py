@@ -1,96 +1,101 @@
-from .app import db
-from sqlalchemy.types import DateTime
 import datetime
-
-#participant_challenge = db.Table('participant_challenge', db.Model.metadata,
-                        #     db.Column('id_challenge', db.Integer, db.ForeignKey('challenge.id'), primary_key=True),
-                        #     db.Column('pseudo_utilisateur', db.String(255), db.ForeignKey('utilisateur.pseudo'), primary_key=True),
-                        #     db.Column('id_img', db.Integer, db.ForeignKey('dessin.id')),
-                        #     db.Column('is_creator', db.Boolean),
-                        #     db.Column('nb_vote', db.Integer)
-                        # )
-
-class Participant_Challenge(db.Model):
-    __tablename__ = 'participant_challenge'
-    id_challenge = db.Column(db.Integer, db.ForeignKey('challenge.id'), primary_key=True)
-    pseudo_utilisateur = db.Column(db.String(255), db.ForeignKey('utilisateur.pseudo'), primary_key=True)
-    id_img = db.Column(db.Integer, db.ForeignKey('dessin.id'))
-    is_creator = db.Column(db.Boolean)
-    nb_vote = db.Column(db.Integer)
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
+from .app import db
 
 
-    def jsonify(self):
-        participation = {
-            'id_challenge': self.id_challenge,
-            'pseudo_utilisateur': self.pseudo_utilisateur,
-            'id_img': self.id_img,
-            'is_creator' : self.is_creator,
-            'nb_vote' : self.nb_vote,
-        }
-        return participation
+#############
+#   USER    #
+#############
+class User(db.Model):
+    __tablename__ = 'USER'
 
+    _username = db.Column('u_username', db.String(255), primary_key=True)
+    _password = db.Column('u_password', db.String(255), nullable=False)
+    _date = db.Column('u_date', db.DateTime(), nullable=False, default=datetime.datetime.utcnow)
 
-class Utilisateur(db.Model):
-    __tablename__ = 'utilisateur'
-    pseudo = db.Column(db.String(255), primary_key=True)
-    mdp = db.Column(db.String(255), nullable=False)
-    date = db.Column(DateTime(), default=datetime.datetime.utcnow)
+    _participations = relationship('Participation', back_populate='_user')
 
     def jsonify(self):
-        user = {
-            'pseudo': self.pseudo,
-            'date': self.date,
-            'mdp': self.mdp,
-        }
-        return user
-
-    def getParticipation(self):
-        return Participant_Challenge.query.filter_by(pseudo_utilisateur=self.pseudo).all()
-
-    def getDessins(self):
-        return Dessin.query.join(Participant_Challenge, Dessin.id == Participant_Challenge.id_img).filter(Participant_Challenge.pseudo_utilisateur == self.pseudo).all()
+        return\
+            {
+                'username': self._username,
+                'date': self._date,
+            }
 
 
-class Dessin(db.Model):
-    __tablename__ = 'dessin'
-    id = db.Column(db.Integer, primary_key=True,autoincrement=True)
-    contenu = db.Column(db.String(255), nullable=False) #lien ?
-    date = db.Column(DateTime(), default=datetime.datetime.utcnow)
+#############
+#  DRAWING  #
+#############
+class Drawing(db.Model):
+    __tablename__ = 'DRAWING'
+
+    _id = db.Column('d_id', db.Integer, primary_key=True, autoincrement=True)
+    _link = db.Column('d_link', db.String(255), nullable=False)
+    _date = db.Column('d_date', db.DateTime(), nullable=False, default=datetime.datetime.utcnow)
+
+    _participation = relationship('Participation', back_populate='_drawing', uselist=False)
 
     def jsonify(self):
-        dessin = {
-            'id': self.id,
-            'lien': self.contenu,
-            'date': self.date,
-        }
-        return dessin
+        return\
+            {
+                'id': self._id,
+                'link': self._link,
+                'date': self._date,
+            }
 
+
+#############
+# CHALLENGE #
+#############
 class Challenge(db.Model):
-    __tablename__ = 'challenge'
-    id = db.Column(db.Integer, primary_key=True,autoincrement=True)
-    nomImgTheme = db.Column(db.String(255), nullable=False)
-    type = db.Column(db.Boolean)
-    theme = db.Column(db.String(255), nullable=False)
-    description = db.Column(db.String(255), nullable=False) #Champs desc
-    duree = db.Column(DateTime(), default=datetime.datetime.utcnow) #Datefin ?
-    timer = db.Column(db.Integer)
+    __tablename__ = 'CHALLENGE'
 
-    def getDessins(self):
-        return Dessin.query.join(Participant_Challenge, Dessin.id == Participant_Challenge.id_img).filter(Participant_Challenge.id_challenge == self.id).all()
+    _id = db.Column('c_id', db.Integer, primary_key=True, autoincrement=True)
+    _name = db.Column('c_name', db.String(255), nullable=False)
+    _type = db.Column('c_type', db.Boolean, nullable=False, default=False)
+    _theme = db.Column('c_theme', db.String(255), nullable=False)
+    _date = db.Column('c_duration', db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    _timer = db.Column('c_timer', db.Integer, nullable=False)
 
-    def getParticipants(self):
-        return Utilisateur.query.join(Participant_Challenge, Utilisateur.pseudo == Participant_Challenge.pseudo_utilisateur).filter(Participant_Challenge.id_challenge == self.id).all()
+    _participations = relationship('Participation', back_populate='_challenge')
 
     def jsonify(self):
-        challenge = {
-            'id': self.id,
-            'nomImgTheme': self.nomImgTheme,
-            'type': self.type,
-            'theme': self.theme,
-            'description' : self.description,
-            'duree': self.duree,
-            'timer': self.timer,
-        }
-        return challenge
+        return\
+            {
+                'id': self._id,
+                'name': self._name,
+                'type': self._type,
+                'theme': self._theme,
+                'date': self._date,
+                'timer': self._timer,
+            }
 
 
+#############
+# CHALLENGE #
+#############
+class Participation(db.Model):
+    __tablename__ = 'PARTICIPATION'
+
+    _user_id = db.Column('p_u_id', db.String(255), ForeignKey('USER.u_username'))
+    _user = relationship('User', back_populate='_participations')
+
+    _drawing_id = db.Column('p_d_id', db.Integer, ForeignKey('DRAWING.d_id'))
+    _drawing = relationship('Drawing', back_populate='_participation')
+
+    _challenge_id = db.Column('p_c_id', db.Integer, ForeignKey('CHALLENGE.c_id'))
+    _challenge = relationship('Challenge', back_populate='_participations')
+
+    _is_creator = db.Column('p_is_creator', db.Boolean, nullable=False)
+    _votes = db.Column('p_votes', db.Integer, nullable=False, default=0)
+
+    def jsonify(self):
+        return\
+            {
+                'user': self._user_id,
+                'drawing': self._drawing_id,
+                'challenge': self._challenge_id,
+                'is_creator': self._is_creator,
+                'votes': self._votes,
+            }
