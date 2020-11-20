@@ -14,7 +14,7 @@ class User(db.Model):
     _password = db.Column('u_password', db.String(255), nullable=False)
     _date = db.Column('u_date', db.DateTime(), nullable=False, default=datetime.datetime.utcnow)
 
-    _participations = relationship('Participation', back_populate='_user')
+    _participations = relationship('Participation', back_populates='_user')
 
     def jsonify(self):
         return\
@@ -34,7 +34,7 @@ class Drawing(db.Model):
     _link = db.Column('d_link', db.String(255), nullable=False)
     _date = db.Column('d_date', db.DateTime(), nullable=False, default=datetime.datetime.utcnow)
 
-    _participation = relationship('Participation', back_populate='_drawing', uselist=False)
+    _participation = relationship('Participation', back_populates='_drawing', uselist=False)
 
     def jsonify(self):
         return\
@@ -58,7 +58,7 @@ class Challenge(db.Model):
     _date = db.Column('c_duration', db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     _timer = db.Column('c_timer', db.Integer, nullable=False)
 
-    _participations = relationship('Participation', back_populate='_challenge')
+    _participations = relationship('Participation', back_populates='_challenge')
 
     def jsonify(self):
         return\
@@ -79,13 +79,13 @@ class Participation(db.Model):
     __tablename__ = 'PARTICIPATION'
 
     _user_id = db.Column('p_u_id', db.String(255), ForeignKey('USER.u_username'))
-    _user = relationship('User', back_populate='_participations')
+    _user = relationship('User', back_populates='_participations')
 
     _drawing_id = db.Column('p_d_id', db.Integer, ForeignKey('DRAWING.d_id'))
-    _drawing = relationship('Drawing', back_populate='_participation')
+    _drawing = relationship('Drawing', back_populates='_participation')
 
     _challenge_id = db.Column('p_c_id', db.Integer, ForeignKey('CHALLENGE.c_id'))
-    _challenge = relationship('Challenge', back_populate='_participations')
+    _challenge = relationship('Challenge', back_populates='_participations')
 
     _is_creator = db.Column('p_is_creator', db.Boolean, nullable=False)
     _votes = db.Column('p_votes', db.Integer, nullable=False, default=0)
