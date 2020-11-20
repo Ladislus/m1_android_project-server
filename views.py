@@ -38,7 +38,7 @@ def valid_request(req):
 #       ##############
 
 #   FULL
-@app.route('/api/full', methods=['GET'])
+@app.route('/api/full', methods=['POST'])
 def api_full():
     if not valid_request(request):
         return wrong_api_key()
@@ -52,12 +52,12 @@ def api_full():
 
 
 #   USERS
-@app.route('/api/user/getall', methods=['GET'])
+@app.route('/api/user/getall', methods=['POST'])
 def api_user_getall():
     return reply([user.jsonify() for user in User.query.all()])
 
 
-@app.route('/api/user/get', methods=['GET'])
+@app.route('/api/user/get', methods=['POST'])
 def api_user_get():
     if not valid_request(request):
         return wrong_api_key()
@@ -70,12 +70,12 @@ def api_user_get():
 
 
 #   DRAWINGS
-@app.route('/api/drawing/getall', methods=['GET'])
+@app.route('/api/drawing/getall', methods=['POST'])
 def api_drawing_getall():
     return reply([drawing.jsonify() for drawing in Drawing.query.all()])
 
 
-@app.route('/api/drawing/get', methods=['GET'])
+@app.route('/api/drawing/get', methods=['POST'])
 def api_drawing_get():
     if not valid_request(request):
         return wrong_api_key()
@@ -88,12 +88,12 @@ def api_drawing_get():
 
 
 #   CHALLENGES
-@app.route('/api/challenge/getall', methods=['GET'])
+@app.route('/api/challenge/getall', methods=['POST'])
 def api_challenge_getall():
     return jsonify([challenge.jsonify() for challenge in Challenge.query.all()]), 200
 
 
-@app.route('/api/challenge/get', methods=['GET'])
+@app.route('/api/challenge/get', methods=['POST'])
 def api_challenge_get():
     if not valid_request(request):
         return wrong_api_key()
@@ -106,12 +106,12 @@ def api_challenge_get():
 
 
 #   PARTICIPATIONS
-@app.route('/api/participation/getall', methods=['GET'])
+@app.route('/api/participation/getall', methods=['POST'])
 def api_participation_getall():
     return jsonify([participation.jsonify() for participation in Participation.query.all()]), 200
 
 
-@app.route('/api/participation/get', methods=['GET'])
+@app.route('/api/participation/get', methods=['POST'])
 def api_participation_get():
     if not valid_request(request):
         return wrong_api_key()
