@@ -38,7 +38,7 @@ def testmodel():
     d0 = Drawing(_link="https://i.pinimg.com/564x/0f/d9/98/0fd998799eceba85f138964def66085d.jpg")
     db.session.add_all([d, d0])
 
-    db.session.add(
+    db.session.add_all(
         [
             Participation(
                 _challenge_id=c._id,
