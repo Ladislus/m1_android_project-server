@@ -3,7 +3,7 @@ import operator
 import datetime
 from .app import *
 from .models import *
-from flask import jsonify, request
+from flask import jsonify, request, redirect, url_for
 from sqlalchemy.exc import IntegrityError
 
 #       ##########################
@@ -83,6 +83,11 @@ def valid_key(req):
 #       ##############
 
 #   DEBUG
+@app.route('/', methods=['GET'])
+def home():
+    return redirect(url_for('debug'))
+
+
 @app.route('/api/debug', methods=['GET'])
 def debug():
     return reply(os.environ.get('API_KEY'))
