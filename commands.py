@@ -20,9 +20,9 @@ def syncdb():
 def testmodel():
     """Peuplage test bd"""
 
-    u = User(_username='MamanGvomi', _password='AbricotSex')
-    u0 = User(_username='LHommeElastic', _password='JeSuisLadislas')
-    u1 = User(_username='WeeboMaster', _password='Tom')
+    u = User(_username='MamanGvomi', _password='AbricotSex', _date=datetime.datetime.now())
+    u0 = User(_username='LHommeElastic', _password='JeSuisLadislas', _date=datetime.datetime.now())
+    u1 = User(_username='WeeboMaster', _password='Tom', _date=datetime.datetime.now())
     db.session.add_all([u, u0, u1])
     db.session.commit()
 
@@ -36,8 +36,8 @@ def testmodel():
     db.session.add(c)
     db.session.commit()
 
-    d = Drawing(_link='https://proactivecreative.com/wp-content/uploads/2019/10/how-to-draw-a-dog--768x555.jpg')
-    d0 = Drawing(_link='https://i.pinimg.com/564x/0f/d9/98/0fd998799eceba85f138964def66085d.jpg')
+    d = Drawing(_link='https://proactivecreative.com/wp-content/uploads/2019/10/how-to-draw-a-dog--768x555.jpg', _date=datetime.datetime.now())
+    d0 = Drawing(_link='https://i.pinimg.com/564x/0f/d9/98/0fd998799eceba85f138964def66085d.jpg', _date=datetime.datetime.now())
     db.session.add_all([d, d0])
     db.session.commit()
 
