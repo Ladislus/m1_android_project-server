@@ -1,8 +1,10 @@
 import os
 import operator
+import datetime
 from .app import *
 from .models import *
 from flask import jsonify, request
+from sqlalchemy.exc import IntegrityError
 
 #       ##########################
 #       #   Utility variables    #
@@ -49,7 +51,7 @@ columns = {
 #       #   Utility functions   #
 #       #########################
 
-#   BAD REQUESTS
+#   ERROR REPONSES
 def wrong_api_key():
     return {'error': 'Invalid api_key'}, 403
 
@@ -58,7 +60,11 @@ def missing_argument(arg):
     return {'error': 'Missing argument:' + arg}, 400
 
 
-#   RESPONSES
+def insertion_error(error):
+    return {'error': 'Unable to save', 'details': error}, 409
+
+
+#   GOOD RESPONSES
 def nothing_found():
     return {}, 204
 
@@ -130,6 +136,23 @@ def api_user_getwhere():
     return reply([user.jsonify() for user in users])
 
 
+@app.route('/api/user/save', methods=['POST'])
+def api_user_save():
+    if not valid_key(request):
+        return wrong_api_key()
+    user = User(
+        _username=request.json.get('username'),
+        _password=request.json.get('password'),
+        _date=datetime.datetime.strptime(request.json.get('date'), '%Y-%m-%dT%H:%M:%S')
+    )
+    try:
+        db.session.add(user)
+        db.session.commit()
+        return reply(user.jsonify())
+    except IntegrityError as e:
+        return insertion_error(e._message())
+
+
 #   DRAWINGS
 @app.route('/api/drawing/getall', methods=['GET'])
 def api_drawing_getall():
@@ -167,6 +190,22 @@ def api_drawing_getwhere():
     if len(drawings) == 0:
         return nothing_found()
     return reply([drawing.jsonify() for drawing in drawings])
+
+
+@app.route('/api/drawing/save', methods=['POST'])
+def api_drawing_save():
+    if not valid_key(request):
+        return wrong_api_key()
+    drawing = Drawing(
+        _link=request.json.get('link'),
+        _date=datetime.datetime.strptime(request.json.get('date'), '%Y-%m-%dT%H:%M:%S')
+    )
+    try:
+        db.session.add(drawing)
+        db.session.commit()
+        return reply(drawing.jsonify())
+    except IntegrityError as e:
+        return insertion_error(e._message())
 
 
 #   CHALLENGES
@@ -208,6 +247,25 @@ def api_challenge_getwhere():
     return reply([challenge.jsonify() for challenge in challenges])
 
 
+@app.route('/api/challenge/save', methods=['POST'])
+def api_challenge_save():
+    if not valid_key(request):
+        return wrong_api_key()
+    challenge = Challenge(
+        _name=request.json.get('name'),
+        _type=request.json.get('type'),
+        _theme=request.json.get('theme'),
+        _date=datetime.datetime.strptime(request.json.get('date'), '%Y-%m-%dT%H:%M:%S'),
+        _timer=request.json.get('timer')
+    )
+    try:
+        db.session.add(challenge)
+        db.session.commit()
+        return reply(challenge.jsonify())
+    except IntegrityError as e:
+        return insertion_error(e._message())
+
+
 #   PARTICIPATIONS
 @app.route('/api/participation/getall', methods=['GET'])
 def api_participation_getall():
@@ -245,8 +303,26 @@ def api_participation_getwhere():
             q = q.filter(operators[params['operator']](columns['participation'][field], request.json[field]['value']))
         except KeyError:
             pass
-    print(q)
     participations = q.all()
     if len(participations) == 0:
         return nothing_found()
     return reply([participation.jsonify() for participation in participations])
+
+
+@app.route('/api/participation/save', methods=['POST'])
+def api_participation_save():
+    if not valid_key(request):
+        return wrong_api_key()
+    participation = Participation(
+        _user_id=request.json.get('u_id'),
+        _drawing_id=request.json.get('d_id'),
+        _challenge_id=request.json.get('c_id'),
+        _is_creator=request.json.get('is_creator'),
+        _votes=request.json.get('votes')
+    )
+    try:
+        db.session.add(participation)
+        db.session.commit()
+        return reply(participation.jsonify())
+    except IntegrityError as e:
+        return insertion_error(e._message())
