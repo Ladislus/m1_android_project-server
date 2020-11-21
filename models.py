@@ -12,7 +12,7 @@ class User(db.Model):
 
     _username = db.Column('u_username', db.String(255), primary_key=True)
     _password = db.Column('u_password', db.String(255), nullable=False)
-    _date = db.Column('u_date', db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    _date = db.Column('u_date', db.DateTime, nullable=False)
 
     _participations = relationship('Participation', back_populates='_user')
 
@@ -20,7 +20,7 @@ class User(db.Model):
         return\
             {
                 'username': self._username,
-                'date': self._date,
+                'date': self._date.strftime("%Y-%m-%dT%H:%M:%S"),
             }
 
 
@@ -32,7 +32,7 @@ class Drawing(db.Model):
 
     _id = db.Column('d_id', db.Integer, primary_key=True, autoincrement=True)
     _link = db.Column('d_link', db.String(255), nullable=False, unique=True)
-    _date = db.Column('d_date', db.DateTime, nullable=False, default=datetime.datetime.utcnow)
+    _date = db.Column('d_date', db.DateTime, nullable=False)
 
     _participation = relationship('Participation', back_populates='_drawing', uselist=False)
 
@@ -41,7 +41,7 @@ class Drawing(db.Model):
             {
                 'id': self._id,
                 'link': self._link,
-                'date': self._date,
+                'date': self._date.strftime("%Y-%m-%dT%H:%M:%S"),
             }
 
 
@@ -67,7 +67,7 @@ class Challenge(db.Model):
                 'name': self._name,
                 'type': self._type,
                 'theme': self._theme,
-                'date': self._date,
+                'date': self._date.strftime("%Y-%m-%dT%H:%M:%S"),
                 'timer': self._timer,
             }
 
