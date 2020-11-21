@@ -65,6 +65,14 @@ def insertion_error(error):
     return {'error': 'Unable to save', 'details': error}, 409
 
 
+def unknown_user(username):
+    return {'error': 'Unknown user:' + username}, 400
+
+
+def bad_password(username):
+    return {'error': 'Bad password:' + username}, 400
+
+
 #   GOOD RESPONSES
 def nothing_found():
     return {}, 204
@@ -87,6 +95,22 @@ def valid_key(req):
 @app.route('/', methods=['GET'])
 def home():
     return redirect(url_for('api_full'))
+
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    if not valid_key(request):
+        return wrong_api_key()
+    if not 'username' in request.json:
+        return missing_argument('username')
+    if not 'password' in request.json:
+        return missing_argument('password')
+    u = User.query.get(request.json.get('username'))
+    if u is None:
+        return unknown_user(request.json.get('username'))
+    if request.json.get('password') == u._password:
+        return reply(u.jsonify())
+    return bad_password(request.json.get('username'))
 
 
 #   FULL
