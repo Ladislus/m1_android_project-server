@@ -33,6 +33,8 @@ columns = {
         'id': Challenge._id,
         'name': Challenge._name,
         'type': Challenge._type,
+        'theme': Challenge._theme,
+        'desc': Challenge._desc,
         'date': Challenge._date,
         'timer': Challenge._timer
     },
@@ -260,6 +262,7 @@ def api_challenge_save():
         _name=request.json.get('name'),
         _type=request.json.get('type'),
         _theme=request.json.get('theme'),
+        _desc=request.json.get('desc'),
         _date=datetime.datetime.strptime(request.json.get('date'), '%Y-%m-%dT%H:%M:%S'),
         _timer=request.json.get('timer')
     )
