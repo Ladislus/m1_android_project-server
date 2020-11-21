@@ -1,7 +1,15 @@
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, event
+from sqlalchemy.engine import Engine
 from sqlalchemy.orm import relationship
 from .app import db
 
+
+# Code used to enforce FOREIGNKEY for SQLite3
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
 
 #############
 #   USER    #
