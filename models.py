@@ -1,4 +1,3 @@
-import datetime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from .app import db
@@ -72,9 +71,9 @@ class Challenge(db.Model):
             }
 
 
-#############
-# CHALLENGE #
-#############
+#################
+# PARTICIPATION #
+#################
 class Participation(db.Model):
     __tablename__ = 'PARTICIPATION'
 
