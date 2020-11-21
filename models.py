@@ -5,10 +5,10 @@ from .app import db
 
 
 # Code used to enforce FOREIGNKEY for SQLite3
-@event.listens_for(Engine, "connect")
+@event.listens_for(Engine, 'connect')
 def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor = dbapi_connection.cursor()
-    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.execute('PRAGMA foreign_keys=ON')
     cursor.close()
 
 #############
@@ -27,7 +27,7 @@ class User(db.Model):
         return\
             {
                 'username': self._username,
-                'date': self._date.strftime("%Y-%m-%dT%H:%M:%S"),
+                'date': self._date.strftime('%Y-%m-%dT%H:%M:%S'),
             }
 
 
@@ -48,7 +48,7 @@ class Drawing(db.Model):
             {
                 'id': self._id,
                 'link': self._link,
-                'date': self._date.strftime("%Y-%m-%dT%H:%M:%S"),
+                'date': self._date.strftime('%Y-%m-%dT%H:%M:%S'),
             }
 
 
@@ -74,7 +74,7 @@ class Challenge(db.Model):
                 'name': self._name,
                 'type': self._type,
                 'theme': self._theme,
-                'date': self._date.strftime("%Y-%m-%dT%H:%M:%S"),
+                'date': self._date.strftime('%Y-%m-%dT%H:%M:%S'),
                 'timer': self._timer,
             }
 
