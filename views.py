@@ -81,15 +81,10 @@ def valid_key(req):
 #       #   Routes   #
 #       ##############
 
-#   DEBUG
+#   HOME
 @app.route('/', methods=['GET'])
 def home():
-    return redirect(url_for('debug'))
-
-
-@app.route('/api/debug', methods=['GET'])
-def debug():
-    return reply(os.getenv('API_KEY'))
+    return redirect(url_for('api_full'))
 
 
 #   FULL
