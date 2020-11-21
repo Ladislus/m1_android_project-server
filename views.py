@@ -74,7 +74,7 @@ def reply(resp):
 
 #   UTILITIES
 def valid_key(req):
-    return req.headers.get('api_key') == os.getenv('API_KEY')
+    return req.headers.get('apiKey') == os.getenv('API_KEY')
 
 
 #       ##############
