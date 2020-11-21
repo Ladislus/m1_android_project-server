@@ -1,4 +1,3 @@
-import os
 import operator
 import datetime
 from .app import *
@@ -75,7 +74,7 @@ def reply(resp):
 
 #   UTILITIES
 def valid_key(req):
-    return req.headers.get('api_key') == os.environ.get('API_KEY')
+    return req.headers.get('api_key') == os.getenv('API_KEY')
 
 
 #       ##############
@@ -90,7 +89,7 @@ def home():
 
 @app.route('/api/debug', methods=['GET'])
 def debug():
-    return reply(os.environ.get('API_KEY'))
+    return reply(os.getenv('API_KEY'))
 
 
 #   FULL
