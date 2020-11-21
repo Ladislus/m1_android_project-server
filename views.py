@@ -82,6 +82,12 @@ def valid_key(req):
 #       #   Routes   #
 #       ##############
 
+#   DEBUG
+@app.route('/api/debug', methods=['GET'])
+def debug():
+    return reply(os.environ.get('API_KEY'))
+
+
 #   FULL
 @app.route('/api/full', methods=['GET'])
 def api_full():
