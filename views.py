@@ -89,6 +89,10 @@ def home():
 
 @app.route('/api/debug', methods=['GET'])
 def debug():
+    d = {}
+    for key, value in request.headers.items():
+        d[key] = value
+    return d, 200
     return reply(os.getenv('API_KEY'))
 
 

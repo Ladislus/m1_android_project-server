@@ -62,6 +62,7 @@ class Challenge(db.Model):
     _name = db.Column('c_name', db.String(255), nullable=False)
     _type = db.Column('c_type', db.Boolean, nullable=False, default=False)
     _theme = db.Column('c_theme', db.String(255), nullable=False)
+    _desc = db.Column('c_desc', db.String(255), nullable=False)
     _date = db.Column('c_duration', db.DateTime, nullable=False)
     _timer = db.Column('c_timer', db.Integer, nullable=False)
 
@@ -74,6 +75,7 @@ class Challenge(db.Model):
                 'name': self._name,
                 'type': self._type,
                 'theme': self._theme,
+                'desc' : self._desc,
                 'date': self._date.strftime('%Y-%m-%dT%H:%M:%S'),
                 'timer': self._timer,
             }

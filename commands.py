@@ -30,6 +30,7 @@ def testmodel():
         _name='Chien mignon',
         _type=True,
         _theme='https://www.notretemps.com/cache/com_zoo_images/c9/nom-chiot_d7378d62ea795a70b121a517c938b895.jpg',
+        _desc="Bonjour les amies ! Il s'agit de dessiner ce poti chiot tous mignon ! Bonne chance !!!",
         _date=datetime.date(2020, 11, 5),
         _timer=30
     )
