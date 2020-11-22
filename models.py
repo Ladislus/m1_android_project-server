@@ -21,7 +21,7 @@ class User(db.Model):
     _password = db.Column('u_password', db.String(255), nullable=False)
     _date = db.Column('u_date', db.DateTime, nullable=False)
 
-    _participations = relationship('Participation', back_populates='_user')
+    _participations = relationship('Participation', back_populates='_user', cascade="delete")
 
     def jsonify(self):
         return\
@@ -41,7 +41,7 @@ class Drawing(db.Model):
     _link = db.Column('d_link', db.String(255), nullable=False, unique=True)
     _date = db.Column('d_date', db.DateTime, nullable=False)
 
-    _participation = relationship('Participation', back_populates='_drawing', uselist=False)
+    _participation = relationship('Participation', back_populates='_drawing', cascade="delete", uselist=False)
 
     def jsonify(self):
         return\
@@ -66,7 +66,7 @@ class Challenge(db.Model):
     _date = db.Column('c_duration', db.DateTime, nullable=False)
     _timer = db.Column('c_timer', db.Integer, nullable=False)
 
-    _participations = relationship('Participation', back_populates='_challenge')
+    _participations = relationship('Participation', back_populates='_challenge', cascade="delete")
 
     def jsonify(self):
         return\
@@ -87,9 +87,9 @@ class Challenge(db.Model):
 class Participation(db.Model):
     __tablename__ = 'PARTICIPATION'
 
-    _user_id = db.Column('p_u_id', db.String(255), ForeignKey('USER.u_username', ondelete='CASCADE'), primary_key=True)
-    _drawing_id = db.Column('p_d_id', db.Integer, ForeignKey('DRAWING.d_id', ondelete='CASCADE'), primary_key=True)
-    _challenge_id = db.Column('p_c_id', db.Integer, ForeignKey('CHALLENGE.c_id', ondelete='CASCADE'), primary_key=True)
+    _user_id = db.Column('p_u_id', db.String(255), ForeignKey('USER.u_username'), primary_key=True)
+    _drawing_id = db.Column('p_d_id', db.Integer, ForeignKey('DRAWING.d_id'), primary_key=True)
+    _challenge_id = db.Column('p_c_id', db.Integer, ForeignKey('CHALLENGE.c_id'), primary_key=True)
 
     _user = relationship('User', back_populates='_participations')
     _drawing = relationship('Drawing', back_populates='_participation')
