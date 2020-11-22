@@ -184,6 +184,20 @@ def api_user_save():
         return insertion_error(e._message())
 
 
+@app.route('/api/user/delete', methods=['GET'])
+def api_user_delete():
+    if not valid_key(request):
+        return wrong_api_key()
+    if 'username' not in request.args:
+        return missing_argument('username')
+    u = User.query.get(request.args.get('username'))
+    if u is None:
+        return nothing_found()
+    db.session.delete(u)
+    db.session.commit()
+    return reply({'deleted': request.args.get('username')})
+
+
 #   DRAWINGS
 @app.route('/api/drawing/getall', methods=['GET'])
 def api_drawing_getall():
@@ -237,6 +251,20 @@ def api_drawing_save():
         return reply(drawing.jsonify())
     except IntegrityError as e:
         return insertion_error(e._message())
+
+
+@app.route('/api/drawing/delete', methods=['GET'])
+def api_drawing_delete():
+    if not valid_key(request):
+        return wrong_api_key()
+    if 'id' not in request.args:
+        return missing_argument('id')
+    d = Drawing.query.get(request.args.get('id'))
+    if d is None:
+        return nothing_found()
+    db.session.delete(d)
+    db.session.commit()
+    return reply({'deleted': request.args.get('id')})
 
 
 #   CHALLENGES
@@ -296,6 +324,20 @@ def api_challenge_save():
         return reply(challenge.jsonify())
     except IntegrityError as e:
         return insertion_error(e._message())
+
+
+@app.route('/api/challenge/delete', methods=['GET'])
+def api_challenge_delete():
+    if not valid_key(request):
+        return wrong_api_key()
+    if 'id' not in request.args:
+        return missing_argument('id')
+    c = Challenge.query.get(request.args.get('id'))
+    if c is None:
+        return nothing_found()
+    db.session.delete(c)
+    db.session.commit()
+    return reply({'deleted': request.args.get('id')})
 
 
 #   PARTICIPATIONS
@@ -358,3 +400,21 @@ def api_participation_save():
         return reply(participation.jsonify())
     except IntegrityError as e:
         return insertion_error(e._message())
+
+
+@app.route('/api/participation/delete', methods=['GET'])
+def api_participation_delete():
+    if not valid_key(request):
+        return wrong_api_key()
+    if 'u_id' not in request.args:
+        return missing_argument('u_id')
+    if 'd_id' not in request.args:
+        return missing_argument('d_id')
+    if 'c_id' not in request.args:
+        return missing_argument('c_id')
+    c = Participation.query.get((request.args.get('u_id'), request.args.get('d_id'), request.args.get('c_id')))
+    if c is None:
+        return nothing_found()
+    db.session.delete(c)
+    db.session.commit()
+    return reply({'deleted': request.args.get('u_id') + ", " + request.args.get('d_id') + ", " + request.args.get('c_id')})
