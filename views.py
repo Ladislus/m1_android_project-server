@@ -146,6 +146,23 @@ def api_full():
         }
     )
 
+@app.route('/api/update', methods=['GET'])
+def api_update():
+    if not valid_key(request):
+        return wrong_api_key()
+    if 'max_drawing' not in request.args:
+        return missing_argument('max_drawing')
+    if 'max_challenge' not in request.args:
+        return missing_argument('max_challenge')
+    return reply(
+        {
+            'users': [user.jsonify() for user in User.query.all()],
+            'drawings': [drawing.jsonify() for drawing in Drawing.query.filter(operators['gt'](columns['drawing']['id'], request.args['max_drawing'])).all()],
+            'challenges': [challenge.jsonify() for challenge in Challenge.query.filter(operators['gt'](columns['challenge']['id'], request.args['max_challenge'])).all()],
+            'participations': [participation.jsonify() for participation in Participation.query.all()]
+        }
+    )
+
 
 #   USERS
 @app.route('/api/user/getall', methods=['GET'])
