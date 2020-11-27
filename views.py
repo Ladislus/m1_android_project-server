@@ -210,7 +210,7 @@ def api_user_save():
     user = User(
         _username=request.json.get('username'),
         _password=request.json.get('password'),
-        _date=datetime.datetime.strptime(request.json.get('date'), '%Y-%m-%dT%H:%M:%S')
+        _date=datetime.datetime.strptime(request.json.get('date'), '%Y-%m-%d %H:%M:%S')
     )
     try:
         db.session.add(user)
@@ -279,7 +279,7 @@ def api_drawing_save():
         return wrong_api_key()
     drawing = Drawing(
         _link=request.json.get('link'),
-        _date=datetime.datetime.strptime(request.json.get('date'), '%Y-%m-%dT%H:%M:%S')
+        _date=datetime.datetime.strptime(request.json.get('date'), '%Y-%m-%d %H:%M:%S')
     )
     try:
         db.session.add(drawing)
@@ -351,7 +351,7 @@ def api_challenge_save():
         _type=request.json.get('type'),
         _theme=request.json.get('theme'),
         _desc=request.json.get('desc'),
-        _date=datetime.datetime.strptime(request.json.get('date'), '%Y-%m-%dT%H:%M:%S'),
+        _date=datetime.datetime.strptime(request.json.get('date'), '%Y-%m-%d %H:%M:%S'),
         _timer=request.json.get('timer')
     )
     try:
