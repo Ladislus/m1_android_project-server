@@ -112,6 +112,25 @@ def login():
         return reply(u.jsonify())
     return bad_password(request.json.get('username'))
 
+@app.route('/api/password', methods=['POST'])
+def password():
+    if not valid_key(request):
+        return wrong_api_key()
+    if not 'username' in request.json:
+        return missing_argument('username')
+    if not 'old' in request.json:
+        return missing_argument('old')
+    if not 'new' in request.json:
+        return missing_argument('new')
+    u = User.query.get(request.json.get('username'))
+    if u is None:
+        return unknown_user(request.json.get('username'))
+    if u._password == request.json.get('old'):
+        u._password = request.json.get('new')
+        db.session.commit()
+        return reply(u.jsonify())
+    return bad_password(request.json.get('username'))
+
 
 #   FULL
 @app.route('/api/full', methods=['GET'])
