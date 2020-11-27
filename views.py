@@ -185,7 +185,7 @@ def api_user_get():
     u = User.query.get(request.args.get('username'))
     if u is not None:
         return reply(u.jsonify())
-    return nothing_found()
+    return unknown_user(request.args.get('username'))
 
 
 @app.route('/api/user/getwhere', methods=['POST'])
@@ -455,7 +455,7 @@ def api_participation_delete():
         return nothing_found()
     db.session.delete(p)
     db.session.commit()
-    return reply({'deleted': request.args.get('u_id') + ", " + request.args.get('d_id') + ", " + request.args.get('c_id')})
+    return reply({'deleted': request.args.get('u_id') + ', ' + request.args.get('d_id') + ', ' + request.args.get('c_id')})
 
 @app.route('/api/participation/vote', methods=['PUT'])
 def api_participation_vote():
