@@ -399,9 +399,9 @@ def api_participation_get():
         return missing_argument('d_id')
     if 'c_id' not in request.args:
         return missing_argument('c_id')
-    c = Participation.query.get((request.args.get('u_id'), request.args.get('d_id'), request.args.get('c_id')))
-    if c is not None:
-        return reply(c.jsonify())
+    p = Participation.query.get((request.args.get('u_id'), request.args.get('d_id'), request.args.get('c_id')))
+    if p is not None:
+        return reply(p.jsonify())
     return nothing_found()
 
 
@@ -450,9 +450,26 @@ def api_participation_delete():
         return missing_argument('d_id')
     if 'c_id' not in request.args:
         return missing_argument('c_id')
-    c = Participation.query.get((request.args.get('u_id'), request.args.get('d_id'), request.args.get('c_id')))
-    if c is None:
+    p = Participation.query.get((request.args.get('u_id'), request.args.get('d_id'), request.args.get('c_id')))
+    if p is None:
         return nothing_found()
-    db.session.delete(c)
+    db.session.delete(p)
     db.session.commit()
     return reply({'deleted': request.args.get('u_id') + ", " + request.args.get('d_id') + ", " + request.args.get('c_id')})
+
+@app.route('/api/participation/vote', methods=['PUT'])
+def api_participation_vote():
+    if not valid_key(request):
+        return wrong_api_key()
+    if 'u_id' not in request.args:
+        return missing_argument('u_id')
+    if 'd_id' not in request.args:
+        return missing_argument('d_id')
+    if 'c_id' not in request.args:
+        return missing_argument('c_id')
+    p = Participation.query.get((request.args.get('u_id'), request.args.get('d_id'), request.args.get('c_id')))
+    if p is None:
+        return nothing_found()
+    p._votes = p._votes + 1
+    db.session.commit()
+    return reply(p.jsonify())
