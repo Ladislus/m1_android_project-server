@@ -20,9 +20,9 @@ def syncdb():
 def testmodel():
     """Peuplage test bd"""
 
-    u = User(_username='MamanGvomi', _password='AbricotSex', _date=datetime.datetime.now())
-    u0 = User(_username='LHommeElastic', _password='JeSuisLadislas', _date=datetime.datetime.now())
-    u1 = User(_username='WeeboMaster', _password='Tom', _date=datetime.datetime.now())
+    u = User(_username='MamanGvomi', _password='$2a$12$8RIcKP1eNY6N48K0Apqc/ezEranNfK0jhvM5b0AqVPipyzuwDL4uW', _date=datetime.datetime.now(), _salt='$2a$12$8RIcKP1eNY6N48K0Apqc/e')
+    u0 = User(_username='LHommeElastic', _password='$2a$12$kboUKvhiGgMU1q4r/kcUbuGCd8H9Mfu3rpDbolScpbL./ZrINL9B2', _date=datetime.datetime.now(), _salt='$2a$12$kboUKvhiGgMU1q4r/kcUbu')
+    u1 = User(_username='WeeboMaster', _password='$2a$12$Z4LCvcPIRI/hofjy8k6oaO.BVS0x/N7qIhgG.Xrmfgd21Kb/EaVQi', _date=datetime.datetime.now(), _salt='$2a$12$Z4LCvcPIRI/hofjy8k6oaO')
     db.session.add_all([u, u0, u1])
     db.session.commit()
 

@@ -11,6 +11,7 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.execute('PRAGMA foreign_keys=ON')
     cursor.close()
 
+
 #############
 #   USER    #
 #############
@@ -20,6 +21,7 @@ class User(db.Model):
     _username = db.Column('u_username', db.String(255), primary_key=True)
     _password = db.Column('u_password', db.String(255), nullable=False)
     _date = db.Column('u_date', db.DateTime, nullable=False)
+    _salt = db.Column('u_salt', db.String(255), nullable=False)
 
     _participations = relationship('Participation', back_populates='_user', cascade="delete")
 
@@ -28,6 +30,7 @@ class User(db.Model):
             {
                 'username': self._username,
                 'date': self._date.strftime('%Y-%m-%dT%H:%M:%S'),
+                'salt': self._salt,
             }
 
 

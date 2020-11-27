@@ -22,7 +22,8 @@ columns = {
     'user': {
         'username': User._username,
         'password': User._password,
-        'date': User._date
+        'date': User._date,
+        'salt': User._salt
     },
     'drawing': {
         'id': Drawing._id,
@@ -210,7 +211,8 @@ def api_user_save():
     user = User(
         _username=request.json.get('username'),
         _password=request.json.get('password'),
-        _date=datetime.datetime.strptime(request.json.get('date'), '%Y-%m-%d %H:%M:%S')
+        _date=datetime.datetime.strptime(request.json.get('date'), '%Y-%m-%d %H:%M:%S'),
+        _salt=request.json.get('salt')
     )
     try:
         db.session.add(user)
