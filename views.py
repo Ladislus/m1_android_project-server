@@ -69,6 +69,9 @@ def insertion_error(error):
 def unknown_user(username):
     return {'error': 'Unknown user:' + username}, 400
 
+def unknown_participation(u_id, d_id, c_id):
+    return {'error': 'Unknown participation: (' + u_id + ', ' + d_id + ', ' + c_id + ')'}, 400
+
 
 def bad_password(username):
     return {'error': 'Bad password:' + username}, 400
@@ -461,6 +464,8 @@ def api_participation_delete():
 def api_participation_vote():
     if not valid_key(request):
         return wrong_api_key()
+    if 'voter' not in request.args:
+        return missing_argument('voter')
     if 'u_id' not in request.args:
         return missing_argument('u_id')
     if 'd_id' not in request.args:
@@ -469,7 +474,13 @@ def api_participation_vote():
         return missing_argument('c_id')
     p = Participation.query.get((request.args.get('u_id'), request.args.get('d_id'), request.args.get('c_id')))
     if p is None:
-        return nothing_found()
+        return unknown_participation(request.args.get('u_id'), request.args.get('d_id'), request.args.get('c_id'))
+    u = User.query.get(request.args.get('voter'))
+    if u is None:
+        return unknown_user(request.args.get('voter'))
+    if u in p._voters:
+        return insertion_error(request.args.get('voter') + ' has already voted')
     p._votes = p._votes + 1
+    p._voters.append(u)
     db.session.commit()
     return reply(p.jsonify())
